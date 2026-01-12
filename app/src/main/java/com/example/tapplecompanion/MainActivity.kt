@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,9 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.style.TextAlign
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,20 +60,25 @@ fun Greeting(modifier: Modifier = Modifier) {
                 text = "$topic1\n\n$topic2",
                 modifier = modifier.align(Alignment.Center),
                 color = Color.White,
-                fontSize = 20.sp
+                textAlign = TextAlign.Center
             )
-            Button(onClick = {
-                haptic.performHapticFeedback(HapticFeedbackType.Confirm)
-                if (topicNum2 < topics.size - 2) {  // Check if there are enough topics left. Else start from the beginning.
-                    topicNum1 += 2
-                    topicNum2 += 2
-                } else {
-                    topicNum1 = 0
-                    topicNum2 = 1
-                }
-                topic1 = topics[topicNum1]
-                topic2 = topics[topicNum2]
-                }, content = { Text(text = "Seuraava", fontSize = 24.sp) }, modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 64.dp).size(width = 150.dp, height = 75.dp))
+            Button(
+                onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                    if (topicNum2 < topics.size - 2) {  // Check if there are enough topics left. Else start from the beginning.
+                        topicNum1 += 2
+                        topicNum2 += 2
+                    } else {
+                        topicNum1 = 0
+                        topicNum2 = 1
+                    }
+                    topic1 = topics[topicNum1]
+                    topic2 = topics[topicNum2]
+                },
+                content = { Text(text = "Seuraava") },
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 64.dp).size(width = 130.dp, height = 65.dp),
+                contentPadding = PaddingValues(8.dp)
+            )
         }
     }
 }
