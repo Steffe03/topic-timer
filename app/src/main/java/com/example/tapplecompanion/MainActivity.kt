@@ -46,13 +46,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(modifier: Modifier = Modifier) {
     val haptic = LocalHapticFeedback.current
+    val topics = tappleTopics.shuffled()
+    var topicNum1 = 0
+    var topicNum2 = 1
 
-    var topic1 by remember { mutableStateOf(tappleTopics.random()) }
-    var topic2 by remember { mutableStateOf(tappleTopics.random()) }
-
-    while (topic1 == topic2) {
-        topic2 = tappleTopics.random()
-    }
+    var topic1 by remember { mutableStateOf(topics[topicNum1]) }
+    var topic2 by remember { mutableStateOf(topics[topicNum2]) }
 
     Surface(color = Color(0xFF000000)) {
         Box(Modifier.fillMaxSize()) {
@@ -63,12 +62,17 @@ fun Greeting(modifier: Modifier = Modifier) {
                 fontSize = 20.sp
             )
             Button(onClick = {
-                topic1 = tappleTopics.random()
-                topic2 = tappleTopics.random()
                 haptic.performHapticFeedback(HapticFeedbackType.Confirm)
-                while (topic1 == topic2) {
-                    topic2 = tappleTopics.random()
-                } }, content = { Text(text = "Seuraava", fontSize = 24.sp) }, modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 64.dp).size(width = 150.dp, height = 75.dp))
+                if (topicNum2 < topics.size - 2) {  // Check if there are enough topics left. Else start from the beginning.
+                    topicNum1 += 2
+                    topicNum2 += 2
+                } else {
+                    topicNum1 = 0
+                    topicNum2 = 1
+                }
+                topic1 = topics[topicNum1]
+                topic2 = topics[topicNum2]
+                }, content = { Text(text = "Seuraava", fontSize = 24.sp) }, modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 64.dp).size(width = 150.dp, height = 75.dp))
         }
     }
 }
