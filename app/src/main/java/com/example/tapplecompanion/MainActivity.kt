@@ -17,8 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.tapplecompanion.ui.theme.TappleCompanionTheme
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
@@ -27,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,12 +53,11 @@ fun Greeting(modifier: Modifier = Modifier) {
     var topic1 by remember { mutableStateOf(topics[topicNum1]) }
     var topic2 by remember { mutableStateOf(topics[topicNum2]) }
 
-    Surface(color = Color(0xFF000000)) {
+    Surface {
         Box(Modifier.fillMaxSize()) {
             Text(
                 text = "$topic1\n\n$topic2",
                 modifier = modifier.align(Alignment.Center),
-                color = Color.White,
                 textAlign = TextAlign.Center
             )
             Button(
@@ -83,7 +81,7 @@ fun Greeting(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 fun GreetingPreview() {
     TappleCompanionTheme {
