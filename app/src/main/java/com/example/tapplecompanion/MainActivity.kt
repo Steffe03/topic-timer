@@ -1,6 +1,7 @@
 package com.example.tapplecompanion
 
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,8 +34,12 @@ import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import android.os.Vibrator
+import android.os.VibrationEffect
+import androidx.annotation.RequiresApi
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -42,7 +47,8 @@ class MainActivity : ComponentActivity() {
             TappleCompanionTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
+                        inPreview = false
                     )
                 }
             }
@@ -50,8 +56,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Greeting(modifier: Modifier = Modifier) {
+fun Greeting(modifier: Modifier = Modifier, inPreview: Boolean) {
     val haptic = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -62,8 +69,9 @@ fun Greeting(modifier: Modifier = Modifier) {
     var job by remember { mutableStateOf<Job?>(null) }
     var topic1 by remember { mutableStateOf(topics[topicNum1]) }
     var topic2 by remember { mutableStateOf(topics[topicNum2]) }
-    val mediaBuzzer = MediaPlayer.create(context, R.raw.buzzer)
-    val mediaDing = MediaPlayer.create(context, R.raw.ding)
+    val mediaBuzzer = if (!inPreview) MediaPlayer.create(context, R.raw.buzzer) else null  // Preview doesn't support MediaPlayer
+    val mediaDing = if (!inPreview) MediaPlayer.create(context, R.raw.ding) else null
+    val vibrator = context.getSystemService(Vibrator::class.java)
 
     Surface {
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
@@ -72,9 +80,11 @@ fun Greeting(modifier: Modifier = Modifier) {
                     job?.cancel()  // Cancel the previous timer
 
                     job = scope.launch {
-                        mediaDing.start()
+                        mediaDing?.start()
                         delay(10000)
-                        mediaBuzzer.start()
+                        mediaBuzzer?.seekTo(1000)  // TODO: Cut the audio file so this isn't needed
+                        mediaBuzzer?.start()
+                        vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 400, 100, 400), -1))
                     }
                 },
                 modifier = Modifier.padding(bottom = 64.dp).size(width = 130.dp, height = 130.dp),
@@ -106,10 +116,11 @@ fun Greeting(modifier: Modifier = Modifier) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @PreviewLightDark
 @Composable
 fun GreetingPreview() {
     TappleCompanionTheme {
-        Greeting()
+        Greeting(inPreview = true)
     }
 }
