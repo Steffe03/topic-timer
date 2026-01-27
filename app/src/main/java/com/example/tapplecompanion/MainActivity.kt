@@ -1,6 +1,5 @@
 package com.example.tapplecompanion
 
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,14 +27,10 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import android.os.Vibrator
-import android.os.VibrationEffect
 import androidx.annotation.RequiresApi
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.NavHost
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -45,11 +39,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TappleCompanionTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        modifier = Modifier.padding(innerPadding),
-                        inPreview = false
-                    )
+                val navController = rememberNavController()
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "home",
+                ) {
+                    composable("home") {
+                        HomePage(
+                            onOpenTimer = { navController.navigate("timer") }
+                        )
+                    }
+                    composable("timer") {
+                        TimerPage(onBack = { navController.popBackStack() }, inPreview = false)
+                    }
                 }
             }
         }
@@ -58,41 +61,27 @@ class MainActivity : ComponentActivity() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Greeting(modifier: Modifier = Modifier, inPreview: Boolean) {
+fun HomePage(onOpenTimer: () -> Unit = {}) {
     val haptic = LocalHapticFeedback.current
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     val topics = tappleTopics.shuffled()
     var topicNum1 = 0
     var topicNum2 = 1
-    var job by remember { mutableStateOf<Job?>(null) }
     var topic1 by remember { mutableStateOf(topics[topicNum1]) }
     var topic2 by remember { mutableStateOf(topics[topicNum2]) }
-    val mediaBuzzer = if (!inPreview) MediaPlayer.create(context, R.raw.buzzer) else null  // Preview doesn't support MediaPlayer
-    val mediaDing = if (!inPreview) MediaPlayer.create(context, R.raw.ding) else null
-    val vibrator = context.getSystemService(Vibrator::class.java)
 
     Surface {
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
             Button(
                 onClick = {
-                    job?.cancel()  // Cancel the previous timer
-
-                    job = scope.launch {
-                        mediaDing?.start()
-                        delay(10000)
-                        mediaBuzzer?.seekTo(1000)  // TODO: Cut the audio file so this isn't needed
-                        mediaBuzzer?.start()
-                        vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 400, 100, 400), -1))
-                    }
+                    onOpenTimer()
                 },
                 modifier = Modifier.padding(bottom = 64.dp).size(width = 130.dp, height = 130.dp),
                 content = { Text(text = "Aloita") },
             )
             Text(
                 text = "$topic1\n\n$topic2",
-                modifier = modifier.padding(bottom = 64.dp),
+                modifier = Modifier.padding(bottom = 64.dp),
                 textAlign = TextAlign.Center
             )
             Button(
@@ -121,6 +110,20 @@ fun Greeting(modifier: Modifier = Modifier, inPreview: Boolean) {
 @Composable
 fun GreetingPreview() {
     TappleCompanionTheme {
-        Greeting(inPreview = true)
+        val navController = rememberNavController()
+
+        NavHost(
+            navController = navController,
+            startDestination = "home",
+        ) {
+            composable("home") {
+                HomePage(
+                    onOpenTimer = { navController.navigate("timer") }
+                )
+            }
+            composable("timer") {
+                TimerPage(onBack = { navController.popBackStack() }, inPreview = true)
+            }
+        }
     }
 }
