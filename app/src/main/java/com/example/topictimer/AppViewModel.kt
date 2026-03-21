@@ -1,4 +1,4 @@
-package com.example.tapplecompanion
+package com.example.topictimer
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

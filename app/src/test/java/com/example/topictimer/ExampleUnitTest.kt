@@ -1,4 +1,4 @@
-package com.example.tapplecompanion
+package com.example.topictimer
 
 import org.junit.Test
 

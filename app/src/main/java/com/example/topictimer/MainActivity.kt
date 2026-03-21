@@ -1,4 +1,4 @@
-package com.example.tapplecompanion
+package com.example.topictimer
 
 import android.os.Build
 import android.os.Bundle
@@ -16,7 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.tapplecompanion.ui.theme.TappleCompanionTheme
+import com.example.topictimer.ui.theme.TappleCompanionTheme
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType

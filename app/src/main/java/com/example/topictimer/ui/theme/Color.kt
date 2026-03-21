@@ -1,4 +1,4 @@
-package com.example.tapplecompanion.ui.theme
+package com.example.topictimer.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

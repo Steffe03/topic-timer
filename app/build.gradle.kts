@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tapplecompanion"
+    namespace = "com.example.topictimer"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.example.tapplecompanion"
+        applicationId = "com.example.topictimer"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

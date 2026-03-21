@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Tapple Companion"
+rootProject.name = "Topic Timer"
 include(":app")
  

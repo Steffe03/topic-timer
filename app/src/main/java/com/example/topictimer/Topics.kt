@@ -1,4 +1,4 @@
-package com.example.tapplecompanion
+package com.example.topictimer
 
 val tappleTopics = listOf(
     // 1–10
