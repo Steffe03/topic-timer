@@ -16,7 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.topictimer.ui.theme.TappleCompanionTheme
+import com.example.topictimer.ui.theme.TopicTimerTheme
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            TappleCompanionTheme {
+            TopicTimerTheme {
                 val navController = rememberNavController()
                 val appViewModel: AppViewModel = viewModel()
 
@@ -97,7 +97,7 @@ fun HomePage(onOpenTimer: () -> Unit = {}, appViewModel: AppViewModel) {
 @PreviewLightDark
 @Composable
 fun GreetingPreview() {
-    TappleCompanionTheme {
+    TopicTimerTheme {
         val navController = rememberNavController()
         val appViewModel: AppViewModel = viewModel()
 
