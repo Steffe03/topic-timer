@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
@@ -67,7 +68,10 @@ fun HomePage(onOpenTimer: () -> Unit = {}, appViewModel: AppViewModel) {
     val haptic = LocalHapticFeedback.current
 
     Surface {
-        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
+        Box (
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
             Button(
                 onClick = {
                     onOpenTimer()
@@ -75,6 +79,8 @@ fun HomePage(onOpenTimer: () -> Unit = {}, appViewModel: AppViewModel) {
                 modifier = Modifier.padding(bottom = 64.dp).size(width = 130.dp, height = 130.dp),
                 content = { Text(text = "Aloita") },
             )
+        }
+        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
             Text(
                 text = "${appViewModel.topic1}\n\n${appViewModel.topic2}",
                 modifier = Modifier.padding(bottom = 64.dp),
