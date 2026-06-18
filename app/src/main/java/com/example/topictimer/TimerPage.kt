@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -43,15 +44,20 @@ fun TimerPage(onBack: () -> Unit, inPreview: Boolean, appViewModel: AppViewModel
     val mediaDing = if (!inPreview) MediaPlayer.create(context, R.raw.ding) else null
     val vibrator = context.getSystemService(Vibrator::class.java)
 
+    var outOfTime by remember { mutableStateOf(false) }
+
     fun nextTurn() {
         job?.cancel()
 
         job = scope.launch {
             mediaDing?.start()
             delay(10000)
+            outOfTime = true
             mediaBuzzer?.seekTo(1000)  // TODO: Cut the audio file so this isn't needed
             mediaBuzzer?.start()
             vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 400, 100, 400), -1))
+            delay(1000)
+            onBack()
         }
 
     }
@@ -63,23 +69,38 @@ fun TimerPage(onBack: () -> Unit, inPreview: Boolean, appViewModel: AppViewModel
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(if (isPressed) Color(114, 47, 55) else Color(6, 64, 43))
-            .clickable (
-                interactionSource = interactionSource
+    if (!outOfTime) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(if (isPressed) Color(0xffffa500) else Color(0xff005aff))
+                .clickable(
+                    interactionSource = interactionSource
+                ) {
+                    nextTurn()
+                },
+        ) {
+            Column(
+                Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                nextTurn()
-            },
-    ) {
-        Column (Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            Text(
-                text = "${appViewModel.topic1}\n\n${appViewModel.topic2}",
-                modifier = Modifier.padding(bottom = 64.dp),
-                textAlign = TextAlign.Center,
-                color = Color.White
-            )
+                Text(
+                    text = "${appViewModel.topic1}\n\n${appViewModel.topic2}",
+                    modifier = Modifier.padding(bottom = 64.dp),
+                    textAlign = TextAlign.Center,
+                    color = Color.White
+                )
+            }
+        }
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xffff0800)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Time's up!", color = Color.White, fontSize = 64.sp, textAlign = TextAlign.Center)
         }
     }
 }
