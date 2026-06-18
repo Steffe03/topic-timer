@@ -29,6 +29,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material.icons.outlined.ChevronRight
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -76,14 +80,14 @@ fun HomePage(onOpenTimer: () -> Unit = {}, appViewModel: AppViewModel) {
                 onClick = {
                     onOpenTimer()
                 },
-                modifier = Modifier.padding(bottom = 64.dp).size(width = 130.dp, height = 130.dp),
-                content = { Text(text = "Aloita") },
+                modifier = Modifier.padding(bottom = 64.dp).size(128.dp),
+                content = { Icon(Icons.Outlined.Timer, contentDescription = "Aloita", modifier = Modifier.size(64.dp)) },
             )
         }
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
             Text(
                 text = "${appViewModel.topic1}\n\n${appViewModel.topic2}",
-                modifier = Modifier.padding(bottom = 64.dp),
+                modifier = Modifier.padding(bottom = 32.dp),
                 textAlign = TextAlign.Center
             )
             Button(
@@ -91,7 +95,7 @@ fun HomePage(onOpenTimer: () -> Unit = {}, appViewModel: AppViewModel) {
                     haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                     appViewModel.nextTopics()
                 },
-                content = { Text(text = "Seuraava") },
+                content = { Icon(Icons.Outlined.ChevronRight, contentDescription = "Seuraava", modifier = Modifier.size(64.dp)) },
                 modifier = Modifier.padding(bottom = 64.dp).size(width = 130.dp, height = 65.dp),
                 contentPadding = PaddingValues(8.dp)
             )
