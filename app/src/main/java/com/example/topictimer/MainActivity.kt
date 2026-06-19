@@ -57,7 +57,6 @@ class MainActivity : ComponentActivity() {
                     composable("timer") {
                         TimerPage(
                             onBack = { navController.popBackStack() },
-                            inPreview = false,
                             appViewModel = appViewModel)
                     }
                 }
@@ -68,7 +67,7 @@ class MainActivity : ComponentActivity() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomePage(onOpenTimer: () -> Unit = {}, appViewModel: AppViewModel) {
+fun HomePage(onOpenTimer: () -> Unit = {}, appViewModel: AppViewModel? = null) {
     val haptic = LocalHapticFeedback.current
 
     Surface {
@@ -86,14 +85,14 @@ fun HomePage(onOpenTimer: () -> Unit = {}, appViewModel: AppViewModel) {
         }
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
             Text(
-                text = "${appViewModel.topic1}\n\n${appViewModel.topic2}",
+                text = if (appViewModel != null) {"${appViewModel.topic1}\n\n${appViewModel.topic2}"} else {"Esimerkkiaihe 1\n\nEsimerkkiaihe 2"},
                 modifier = Modifier.padding(bottom = 32.dp),
                 textAlign = TextAlign.Center
             )
             Button(
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.Confirm)
-                    appViewModel.nextTopics()
+                    appViewModel?.nextTopics()
                 },
                 content = { Icon(Icons.Outlined.ChevronRight, contentDescription = "Seuraava", modifier = Modifier.size(64.dp)) },
                 modifier = Modifier.padding(bottom = 64.dp).size(width = 130.dp, height = 65.dp),
@@ -108,25 +107,6 @@ fun HomePage(onOpenTimer: () -> Unit = {}, appViewModel: AppViewModel) {
 @Composable
 fun GreetingPreview() {
     TopicTimerTheme {
-        val navController = rememberNavController()
-        val appViewModel: AppViewModel = viewModel()
-
-        NavHost(
-            navController = navController,
-            startDestination = "home",
-        ) {
-            composable("home") {
-                HomePage(
-                    onOpenTimer = { navController.navigate("timer") },
-                    appViewModel = appViewModel
-                )
-            }
-            composable("timer") {
-                TimerPage(
-                    onBack = { navController.popBackStack() },
-                    inPreview = true,
-                    appViewModel = appViewModel)
-            }
-        }
+        HomePage({})
     }
 }
