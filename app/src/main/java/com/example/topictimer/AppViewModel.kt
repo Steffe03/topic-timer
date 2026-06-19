@@ -1,20 +1,48 @@
 package com.example.topictimer
 
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.topictimer.database.AppDatabase
+import com.example.topictimer.database.Topic
+import kotlinx.coroutines.launch
 
-val topics = tappleTopics.shuffled()
-var topicNum1 = 0
-var topicNum2 = 1
+class AppViewModel(application: Application) : AndroidViewModel(application) {
 
-class AppViewModel : ViewModel() {
-    var topic1 by mutableStateOf(topics[topicNum1])
+    private val dao = AppDatabase.getDatabase(application, viewModelScope).topicDao()
+
+    private var currentSetId = 1
+
+    private var topics: List<Topic> = emptyList()
+    private var topicNum1 = 0
+    private var topicNum2 = 1
+
+    var topic1 by mutableStateOf("")
         private set
 
-    var topic2 by mutableStateOf(topics[topicNum2])
+    var topic2 by mutableStateOf("")
         private set
+
+    init {
+        viewModelScope.launch { loadSet(currentSetId) }
+    }
+
+    private suspend fun loadSet(setId: Int) {
+        topics = dao.getTopicsForSet(setId)
+        topicNum1 = 0
+        topicNum2 = 1
+        updateDisplayedTopics()
+    }
+
+    private fun updateDisplayedTopics() {
+        if (topics.size > topicNum2) {
+            topic1 = topics[topicNum1].description
+            topic2 = topics[topicNum2].description
+        }
+    }
 
     fun nextTopics() {
         if (topicNum2 < topics.size - 2) {  // Check if there are enough topics left. Else start from the beginning.
@@ -24,7 +52,6 @@ class AppViewModel : ViewModel() {
             topicNum1 = 0
             topicNum2 = 1
         }
-        topic1 = topics[topicNum1]
-        topic2 = topics[topicNum2]
+        updateDisplayedTopics()
     }
 }

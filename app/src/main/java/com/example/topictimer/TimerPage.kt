@@ -27,21 +27,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.topictimer.ui.theme.TopicTimerTheme
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TimerPage(onBack: () -> Unit, inPreview: Boolean, appViewModel: AppViewModel) {
+fun TimerPage(onBack: () -> Unit, appViewModel: AppViewModel? = null) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
     var job by remember { mutableStateOf<Job?>(null) }
-    val mediaBuzzer = if (!inPreview) MediaPlayer.create(context, R.raw.buzzer) else null  // Preview doesn't support MediaPlayer
-    val mediaDing = if (!inPreview) MediaPlayer.create(context, R.raw.ding) else null
+    val mediaBuzzer = if (appViewModel != null) MediaPlayer.create(context, R.raw.buzzer) else null  // Preview doesn't support MediaPlayer
+    val mediaDing = if (appViewModel != null) MediaPlayer.create(context, R.raw.ding) else null
     val vibrator = context.getSystemService(Vibrator::class.java)
 
     var outOfTime by remember { mutableStateOf(false) }
@@ -75,7 +77,8 @@ fun TimerPage(onBack: () -> Unit, inPreview: Boolean, appViewModel: AppViewModel
                 .fillMaxSize()
                 .background(if (isPressed) Color(0xffffa500) else Color(0xff005aff))
                 .clickable(
-                    interactionSource = interactionSource
+                    interactionSource = interactionSource,
+                    indication = null
                 ) {
                     nextTurn()
                 },
@@ -86,7 +89,7 @@ fun TimerPage(onBack: () -> Unit, inPreview: Boolean, appViewModel: AppViewModel
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "${appViewModel.topic1}\n\n${appViewModel.topic2}",
+                    text = if (appViewModel != null) {"${appViewModel.topic1}\n\n${appViewModel.topic2}"} else {"Esimerkkiaihe 1\n\nEsimerkkiaihe 2"},
                     modifier = Modifier.padding(bottom = 64.dp),
                     textAlign = TextAlign.Center,
                     color = Color.White
@@ -102,5 +105,14 @@ fun TimerPage(onBack: () -> Unit, inPreview: Boolean, appViewModel: AppViewModel
         ) {
             Text("Time's up!", color = Color.White, fontSize = 64.sp, textAlign = TextAlign.Center)
         }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@PreviewLightDark
+@Composable
+fun TimerPagePreview() {
+    TopicTimerTheme {
+        TimerPage({})
     }
 }
