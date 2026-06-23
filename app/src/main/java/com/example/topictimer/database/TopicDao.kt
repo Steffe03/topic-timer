@@ -9,9 +9,18 @@ interface TopicDao {
     @Insert
     suspend fun insertAll(topics: List<Topic>)
 
+    @Insert
+    suspend fun insertTopicSet(topicSet: TopicSet): Long
+
     @Query("SELECT * FROM topics WHERE set_id = :setId")
     suspend fun getTopicsForSet(setId: Int): List<Topic>
 
     @Query("SELECT COUNT(*) FROM topics")
     suspend fun getCount(): Int
+
+    @Query("DELETE FROM topics WHERE set_id = :setId")
+    suspend fun removeTopicSet(setId: Int)
+
+    @Query("SELECT id FROM topic_sets LIMIT 1")
+    suspend fun getTopicSetId(): Int
 }

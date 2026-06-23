@@ -14,7 +14,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     private val dao = AppDatabase.getDatabase(application, viewModelScope).topicDao()
 
-    private var currentSetId = 1
+    private var currentSetId = 0
 
     private var topics: List<Topic> = emptyList()
     private var topicNum1 = 0
@@ -27,7 +27,10 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         private set
 
     init {
-        viewModelScope.launch { loadSet(currentSetId) }
+        viewModelScope.launch {
+            currentSetId = dao.getTopicSetId()
+            loadSet(currentSetId)
+        }
     }
 
     private suspend fun loadSet(setId: Int) {
@@ -45,6 +48,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun nextTopics() {
+        viewModelScope.launch {
+            currentSetId = dao.getTopicSetId()
+            loadSet(currentSetId)
+            println("TÄSSÄ:$currentSetId")
+        }
         if (topicNum2 < topics.size - 2) {  // Check if there are enough topics left. Else start from the beginning.
             topicNum1 += 2
             topicNum2 += 2
@@ -53,5 +61,10 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             topicNum2 = 1
         }
         updateDisplayedTopics()
+    }
+
+    fun setTopicSet(setId: Int) {
+        currentSetId = setId
+        viewModelScope.launch { loadSet(setId) }
     }
 }
