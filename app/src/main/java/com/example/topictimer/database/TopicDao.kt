@@ -19,9 +19,9 @@ interface TopicDao {
     @Query("SELECT COUNT(*) FROM topics")
     suspend fun getCount(): Int
 
-    @Query("DELETE FROM topics WHERE set_id = :setId")
+    @Query("DELETE FROM topic_sets WHERE id = :setId")
     suspend fun removeTopicSet(setId: Int)
 
     @Query("SELECT id FROM topic_sets LIMIT 1")
-    fun getTopicSetId(): Flow<Int>
+    fun getInitialTopicSetId(): Flow<Int>
 }

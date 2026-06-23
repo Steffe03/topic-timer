@@ -30,7 +30,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         viewModelScope.launch {
-            currentSetId = dao.getTopicSetId().filterNotNull().first()
+            currentSetId = dao.getInitialTopicSetId().filterNotNull().first()
 
             loadSet(currentSetId)
         }
