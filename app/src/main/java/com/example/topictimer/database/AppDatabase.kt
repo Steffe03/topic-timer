@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [Topic::class, TopicSet::class], version = 2, exportSchema = false)
+@Database(entities = [Topic::class, TopicSet::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun topicDao(): TopicDao
@@ -26,7 +26,6 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "topic_database"
                 )
-                    .fallbackToDestructiveMigration(true)
                     .addCallback(TopicDatabaseCallback(scope))
                     .build()
                     .also { INSTANCE = it }
