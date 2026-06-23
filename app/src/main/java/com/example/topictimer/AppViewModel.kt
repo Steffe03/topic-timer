@@ -8,6 +8,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.topictimer.database.AppDatabase
 import com.example.topictimer.database.Topic
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
@@ -28,7 +30,8 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         viewModelScope.launch {
-            currentSetId = dao.getTopicSetId()
+            currentSetId = dao.getTopicSetId().filterNotNull().first()
+
             loadSet(currentSetId)
         }
     }

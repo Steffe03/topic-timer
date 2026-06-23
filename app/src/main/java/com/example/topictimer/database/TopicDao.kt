@@ -3,6 +3,7 @@ package com.example.topictimer.database
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TopicDao {
@@ -22,5 +23,5 @@ interface TopicDao {
     suspend fun removeTopicSet(setId: Int)
 
     @Query("SELECT id FROM topic_sets LIMIT 1")
-    suspend fun getTopicSetId(): Int
+    fun getTopicSetId(): Flow<Int>
 }
