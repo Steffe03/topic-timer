@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [Topic::class], version = 1, exportSchema = false)
+@Database(entities = [Topic::class, TopicSet::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun topicDao(): TopicDao
@@ -47,11 +47,17 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         suspend fun populateDatabase(dao: TopicDao) {
-            // Same source list, shuffled independently three times -> three distinct sets
-            val entities = (1..3).flatMap { setId ->
-                tappleTopics.shuffled().map { Topic(description = it, setId = setId) }
-            }
-            dao.insertAll(entities)
+            val setId1 = dao.insertTopicSet(TopicSet(name = "First set")).toInt()
+            val setId2 = dao.insertTopicSet(TopicSet(name = "Second set")).toInt()
+            val setId3 = dao.insertTopicSet(TopicSet(name = "Third set")).toInt()
+
+            val entities1 = tappleTopics.take(50).shuffled().map { description -> Topic(description = description, setId = setId1) }
+            val entities2 = tappleTopics.slice(50..99).shuffled().map { description -> Topic(description = description, setId = setId2) }
+            val entities3 = tappleTopics.slice(100..149).shuffled().map { description -> Topic(description = description, setId = setId3) }
+
+            dao.insertAll(entities1)
+            dao.insertAll(entities2)
+            dao.insertAll(entities3)
         }
     }
 }
