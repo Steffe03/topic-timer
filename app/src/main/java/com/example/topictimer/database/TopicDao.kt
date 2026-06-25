@@ -22,6 +22,6 @@ interface TopicDao {
     @Query("DELETE FROM topic_sets WHERE id = :setId")
     suspend fun removeTopicSet(setId: Int)
 
-    @Query("SELECT id FROM topic_sets LIMIT 1")
-    fun getInitialTopicSetId(): Flow<Int>
+    @Query("SELECT id FROM topic_sets ORDER BY id ASC LIMIT 1")
+    fun getInitialTopicSetId(): Flow<Int?>
 }
