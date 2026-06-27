@@ -27,8 +27,9 @@ import com.example.topictimer.AppViewModel
 import com.example.topictimer.ui.theme.TopicTimerTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.unit.dp
-import com.example.topictimer.exampleTopicSets
+import com.example.topictimer.exampleTopicSetsShort
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.IconButton
@@ -38,6 +39,7 @@ import com.example.topictimer.database.TopicSetWithCount
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -47,7 +49,7 @@ fun TopicPage(onBack: () -> Unit, appViewModel: AppViewModel? = null) {
         if (appViewModel != null) {
             appViewModel.getAllTopicSets().collectAsState(initial = emptyList()).value
         } else {
-            exampleTopicSets
+            exampleTopicSetsShort
         }
 
     var currentSetId by remember { mutableIntStateOf(1) }
@@ -104,6 +106,16 @@ fun TopicPage(onBack: () -> Unit, appViewModel: AppViewModel? = null) {
                                     }
                                 }
                             }
+                        }
+                    }
+                    item {
+                        Card(
+                            onClick = {
+                                /*TODO*/
+                            },
+                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        ) {
+                            Icon(Icons.Filled.Add, contentDescription = "Add set", modifier = Modifier.padding(16.dp).fillMaxWidth())
                         }
                     }
                 }

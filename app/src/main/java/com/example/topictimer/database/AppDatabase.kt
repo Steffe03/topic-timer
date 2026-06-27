@@ -50,14 +50,17 @@ abstract class AppDatabase : RoomDatabase() {
             val setId1 = dao.insertTopicSet(TopicSet(name = "First set")).toInt()
             val setId2 = dao.insertTopicSet(TopicSet(name = "Second set")).toInt()
             val setId3 = dao.insertTopicSet(TopicSet(name = "Third set")).toInt()
+            val setId4 = dao.insertTopicSet(TopicSet(name = "Fourth set")).toInt()
 
             val entities1 = exampleTopics.take(50).shuffled().map { description -> Topic(description = description, setId = setId1) }
             val entities2 = exampleTopics.slice(50..99).shuffled().map { description -> Topic(description = description, setId = setId2) }
             val entities3 = exampleTopics.slice(100..149).shuffled().map { description -> Topic(description = description, setId = setId3) }
+            val entities4 = exampleTopics.slice(150..199).shuffled().map { description -> Topic(description = description, setId = setId4) }
 
             dao.insertAll(entities1)
             dao.insertAll(entities2)
             dao.insertAll(entities3)
+            dao.insertAll(entities4)
         }
     }
 }

@@ -262,3 +262,9 @@ val exampleTopicSets = listOf(
     TopicSetWithCount(TopicSet(name = "Example set 14"), topicCount = 140),
     TopicSetWithCount(TopicSet(name = "Example set 15"), topicCount = 150),
 )
+
+val exampleTopicSetsShort = listOf(
+    TopicSetWithCount(TopicSet(name = "Example set 1", id = 1), topicCount = 10),
+    TopicSetWithCount(TopicSet(name = "Example set 2"), topicCount = 20),
+    TopicSetWithCount(TopicSet(name = "Example set 3"), topicCount = 30),
+)
