@@ -24,4 +24,7 @@ interface TopicDao {
 
     @Query("SELECT id FROM topic_sets ORDER BY id ASC LIMIT 1")
     fun getInitialTopicSetId(): Flow<Int?>
+
+    @Query("SELECT * FROM topic_sets")
+    fun getAllTopicSets(): Flow<List<TopicSet>>
 }

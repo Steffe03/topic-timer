@@ -1,4 +1,4 @@
-package com.example.topictimer
+package com.example.topictimer.pages
 
 import android.media.MediaPlayer
 import android.os.Build
@@ -30,6 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.topictimer.AppViewModel
+import com.example.topictimer.R
 import com.example.topictimer.ui.theme.TopicTimerTheme
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

@@ -25,6 +25,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
@@ -33,6 +36,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.ChevronRight
+import com.example.topictimer.pages.TimerPage
+import com.example.topictimer.pages.TopicPage
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -51,13 +56,21 @@ class MainActivity : ComponentActivity() {
                     composable("home") {
                         HomePage(
                             onOpenTimer = { navController.navigate("timer") },
+                            onOpenTopicPage = { navController.navigate("topic_page") },
                             appViewModel = appViewModel
                         )
                     }
                     composable("timer") {
                         TimerPage(
                             onBack = { navController.popBackStack() },
-                            appViewModel = appViewModel)
+                            appViewModel = appViewModel
+                        )
+                    }
+                    composable("topic_page") {
+                        TopicPage(
+                            onBack = { navController.popBackStack() },
+                            appViewModel = appViewModel
+                        )
                     }
                 }
             }
@@ -67,10 +80,21 @@ class MainActivity : ComponentActivity() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomePage(onOpenTimer: () -> Unit = {}, appViewModel: AppViewModel? = null) {
+fun HomePage(onOpenTimer: () -> Unit = {}, onOpenTopicPage: () -> Unit = {}, appViewModel: AppViewModel? = null) {
     val haptic = LocalHapticFeedback.current
 
     Surface {
+        Box(
+            contentAlignment = Alignment.TopEnd,
+            modifier = Modifier.fillMaxSize().padding(16.dp).windowInsetsPadding(WindowInsets.systemBars)  // Keep content below phone's status bar
+        ) {
+            Button(
+                onClick = {
+                    onOpenTopicPage()
+                },
+                content = { Text("Configure topics") },
+            )
+        }
         Box (
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
@@ -92,7 +116,7 @@ fun HomePage(onOpenTimer: () -> Unit = {}, appViewModel: AppViewModel? = null) {
             Button(
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.Confirm)
-                    appViewModel?.nextTopics()
+                    appViewModel?.getNextTopics()
                 },
                 content = { Icon(Icons.Outlined.ChevronRight, contentDescription = "Seuraava", modifier = Modifier.size(64.dp)) },
                 modifier = Modifier.padding(bottom = 64.dp).size(width = 130.dp, height = 65.dp),

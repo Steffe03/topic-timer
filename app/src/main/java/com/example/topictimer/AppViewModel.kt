@@ -50,7 +50,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun nextTopics() {
+    fun getNextTopics() {
         if (topicNum2 < topics.size - 2) {  // Check if there are enough topics left. Else start from the beginning.
             topicNum1 += 2
             topicNum2 += 2
@@ -65,4 +65,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         currentSetId = setId
         viewModelScope.launch { loadSet(setId) }
     }
+
+    fun getAllTopicSets() = dao.getAllTopicSets()
 }

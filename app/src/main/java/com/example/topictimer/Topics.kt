@@ -1,6 +1,8 @@
 package com.example.topictimer
 
-val tappleTopics = listOf(
+import com.example.topictimer.database.TopicSet
+
+val exampleTopics = listOf(
     // 1–10
     "Jotain pyöreää",            //1
     "Jotain mikä on kylmää",     //2
@@ -240,4 +242,14 @@ val tappleTopics = listOf(
     "Jotain mikä on yllättävän painavaa",//198
     "Asioita joita voi hävittää",//199
     "Asioita jotka kuuluvat lomaan"//200
+)
+
+val exampleTopicSets = listOf(
+    TopicSet(name = "Example set 1"),
+    TopicSet(name = "Example set 2"),
+    TopicSet(name = "Example set 3"),
+    TopicSet(name = "Example set 4"),
+    TopicSet(name = "Example set 5"),
+    TopicSet(name = "Example set 6"),
+    TopicSet(name = "Example set 7"),
 )

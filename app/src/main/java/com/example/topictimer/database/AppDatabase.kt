@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.topictimer.tappleTopics
+import com.example.topictimer.exampleTopics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -51,9 +51,9 @@ abstract class AppDatabase : RoomDatabase() {
             val setId2 = dao.insertTopicSet(TopicSet(name = "Second set")).toInt()
             val setId3 = dao.insertTopicSet(TopicSet(name = "Third set")).toInt()
 
-            val entities1 = tappleTopics.take(50).shuffled().map { description -> Topic(description = description, setId = setId1) }
-            val entities2 = tappleTopics.slice(50..99).shuffled().map { description -> Topic(description = description, setId = setId2) }
-            val entities3 = tappleTopics.slice(100..149).shuffled().map { description -> Topic(description = description, setId = setId3) }
+            val entities1 = exampleTopics.take(50).shuffled().map { description -> Topic(description = description, setId = setId1) }
+            val entities2 = exampleTopics.slice(50..99).shuffled().map { description -> Topic(description = description, setId = setId2) }
+            val entities3 = exampleTopics.slice(100..149).shuffled().map { description -> Topic(description = description, setId = setId3) }
 
             dao.insertAll(entities1)
             dao.insertAll(entities2)
