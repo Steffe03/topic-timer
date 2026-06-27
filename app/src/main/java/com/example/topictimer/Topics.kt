@@ -1,6 +1,7 @@
 package com.example.topictimer
 
 import com.example.topictimer.database.TopicSet
+import com.example.topictimer.database.TopicSetWithCount
 
 val exampleTopics = listOf(
     // 1–10
@@ -245,11 +246,19 @@ val exampleTopics = listOf(
 )
 
 val exampleTopicSets = listOf(
-    TopicSet(name = "Example set 1"),
-    TopicSet(name = "Example set 2"),
-    TopicSet(name = "Example set 3"),
-    TopicSet(name = "Example set 4"),
-    TopicSet(name = "Example set 5"),
-    TopicSet(name = "Example set 6"),
-    TopicSet(name = "Example set 7"),
+    TopicSetWithCount(TopicSet(name = "Example set 1", id = 1), topicCount = 10),
+    TopicSetWithCount(TopicSet(name = "Example set 2"), topicCount = 20),
+    TopicSetWithCount(TopicSet(name = "Example set 3"), topicCount = 30),
+    TopicSetWithCount(TopicSet(name = "Example set 4"), topicCount = 40),
+    TopicSetWithCount(TopicSet(name = "Example set 5"), topicCount = 50),
+    TopicSetWithCount(TopicSet(name = "Example set 6"), topicCount = 60),
+    TopicSetWithCount(TopicSet(name = "Example set 7"), topicCount = 70),
+    TopicSetWithCount(TopicSet(name = "Example set 8"), topicCount = 80),
+    TopicSetWithCount(TopicSet(name = "Example set 9"), topicCount = 90),
+    TopicSetWithCount(TopicSet(name = "Example set 10"), topicCount = 100),
+    TopicSetWithCount(TopicSet(name = "Example set 11"), topicCount = 110),
+    TopicSetWithCount(TopicSet(name = "Example set 12"), topicCount = 120),
+    TopicSetWithCount(TopicSet(name = "Example set 13"), topicCount = 130),
+    TopicSetWithCount(TopicSet(name = "Example set 14"), topicCount = 140),
+    TopicSetWithCount(TopicSet(name = "Example set 15"), topicCount = 150),
 )

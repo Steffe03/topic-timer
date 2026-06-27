@@ -1,6 +1,7 @@
 package com.example.topictimer.database
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -8,4 +9,9 @@ import androidx.room.PrimaryKey
 data class TopicSet(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "name") val name: String
+)
+
+data class TopicSetWithCount(
+    @Embedded val topicSet: TopicSet,
+    val topicCount: Int
 )

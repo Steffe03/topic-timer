@@ -67,4 +67,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getAllTopicSets() = dao.getAllTopicSets()
+
+    fun getCurrentSetId() = currentSetId
 }
