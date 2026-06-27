@@ -30,4 +30,7 @@ interface TopicDao {
         FROM topic_sets
     """)
     fun getAllTopicSets(): Flow<List<TopicSetWithCount>>
+
+    @Query("DELETE FROM topic_sets WHERE id = :id")
+    suspend fun deleteTopicSetById(id: Long)
 }

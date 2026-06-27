@@ -69,4 +69,13 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllTopicSets() = dao.getAllTopicSets()
 
     fun getCurrentSetId() = currentSetId
+
+    fun removeTopicSet(setId: Int) {
+        viewModelScope.launch {
+            dao.removeTopicSet(setId)
+            currentSetId = dao.getInitialTopicSetId().filterNotNull().first()
+
+            loadSet(currentSetId)
+        }
+    }
 }

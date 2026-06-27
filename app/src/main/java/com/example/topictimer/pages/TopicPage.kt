@@ -29,6 +29,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.unit.dp
 import com.example.topictimer.exampleTopicSets
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.style.TextAlign
 import com.example.topictimer.database.TopicSetWithCount
@@ -77,12 +80,29 @@ fun TopicPage(onBack: () -> Unit, appViewModel: AppViewModel? = null) {
                             },
                             modifier = Modifier.fillMaxWidth().padding(8.dp)
                         ) {
-                            Row(modifier = Modifier.padding(16.dp)) {
-                                Text(item.topicSet.name)
-                                if (item.topicSet.id == currentSetId) {
-                                    Icon(Icons.Outlined.Check, contentDescription = "Current set", tint = Color.Green, modifier = Modifier.padding(start = 8.dp))
+                            Column {
+                                Row(modifier = Modifier.padding(16.dp)) {
+                                    Text(item.topicSet.name)
+                                    if (item.topicSet.id == currentSetId) {
+                                        Icon(
+                                            Icons.Outlined.Check,
+                                            contentDescription = "Current set",
+                                            tint = Color.Green,
+                                            modifier = Modifier.padding(start = 8.dp)
+                                        )
+                                    }
+                                    Text(
+                                        if (item.topicSet.id == currentSetId) "${item.topicCount} topics" else "(x${item.topicCount})",
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.End
+                                    )
                                 }
-                                Text("(${item.topicCount} topics)", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End)
+                                if (item.topicSet.id == currentSetId) {
+                                    Row(modifier = Modifier.padding(16.dp)) {
+                                        IconButton(onClick = { appViewModel?.removeTopicSet(item.topicSet.id) }, modifier = Modifier.fillMaxWidth(0.5F)) {Icon(Icons.Filled.Delete, contentDescription = "Delete set")}
+                                        IconButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {Icon(Icons.Filled.Edit, contentDescription = "Edit set")}
+                                    }
+                                }
                             }
                         }
                     }
