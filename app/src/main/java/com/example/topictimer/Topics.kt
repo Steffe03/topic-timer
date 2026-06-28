@@ -5,7 +5,7 @@ import com.example.topictimer.database.TopicSetWithCount
 
 val exampleTopics = listOf(
     // 1–10
-    "Jotain pyöreää",            //1
+    "Jotain pyöreää ja tämä aihe jatkaa toiselle riville",            //1
     "Jotain mikä on kylmää",     //2
     "Eläimiä metsässä",          //3
     "Asioita koulussa",          //4

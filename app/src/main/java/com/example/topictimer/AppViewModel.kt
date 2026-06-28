@@ -37,7 +37,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private suspend fun loadSet(setId: Int) {
-        topics = dao.getTopicsForSet(setId)
+        topics = dao.getTopicsForSet(setId).first()
         topicNum1 = 0
         topicNum2 = 1
         updateDisplayedTopics()
@@ -75,6 +75,15 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             dao.removeTopicSet(setId)
             currentSetId = dao.getInitialTopicSetId().filterNotNull().first()
 
+            loadSet(currentSetId)
+        }
+    }
+
+    fun getTopicsForSet(setId: Int) = dao.getTopicsForSet(setId)
+
+    fun removeTopic(topicId: Int) {
+        viewModelScope.launch {
+            dao.removeTopic(topicId)
             loadSet(currentSetId)
         }
     }

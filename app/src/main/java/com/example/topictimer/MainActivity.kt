@@ -37,7 +37,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.ChevronRight
 import com.example.topictimer.pages.TimerPage
-import com.example.topictimer.pages.TopicPage
+import com.example.topictimer.pages.TopicSetsPage
+import com.example.topictimer.pages.TopicsPage
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -56,7 +57,7 @@ class MainActivity : ComponentActivity() {
                     composable("home") {
                         HomePage(
                             onOpenTimer = { navController.navigate("timer") },
-                            onOpenTopicPage = { navController.navigate("topic_page") },
+                            onOpenTopicSetsPage = { navController.navigate("topicsets_page") },
                             appViewModel = appViewModel
                         )
                     }
@@ -66,10 +67,19 @@ class MainActivity : ComponentActivity() {
                             appViewModel = appViewModel
                         )
                     }
-                    composable("topic_page") {
-                        TopicPage(
+                    composable("topicsets_page") {
+                        TopicSetsPage(
                             onBack = { navController.popBackStack() },
+                            onOpenTopicsPage = { topicSetId -> navController.navigate("topics_page/$topicSetId") },
                             appViewModel = appViewModel
+                        )
+                    }
+                    composable("topics_page/{topicSetId}") { backStackEntry ->
+                        val topicSetId = backStackEntry.arguments?.getString("topicSetId")?.toInt() ?: 0
+                        TopicsPage(
+                            onBack = { navController.popBackStack() },
+                            appViewModel = appViewModel,
+                            topicSetId = topicSetId
                         )
                     }
                 }
@@ -80,7 +90,7 @@ class MainActivity : ComponentActivity() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomePage(onOpenTimer: () -> Unit = {}, onOpenTopicPage: () -> Unit = {}, appViewModel: AppViewModel? = null) {
+fun HomePage(onOpenTimer: () -> Unit = {}, onOpenTopicSetsPage: () -> Unit = {}, appViewModel: AppViewModel? = null) {
     val haptic = LocalHapticFeedback.current
 
     Surface {
@@ -90,7 +100,7 @@ fun HomePage(onOpenTimer: () -> Unit = {}, onOpenTopicPage: () -> Unit = {}, app
         ) {
             Button(
                 onClick = {
-                    onOpenTopicPage()
+                    onOpenTopicSetsPage()
                 },
                 content = { Text("Configure topics") },
             )
