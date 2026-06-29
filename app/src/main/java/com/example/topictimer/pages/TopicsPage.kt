@@ -42,8 +42,8 @@ fun TopicsPage(onBack: () -> Unit, topicSetId: Int, appViewModel: AppViewModel? 
         } else
             exampleTopics.map { topic -> Topic(description = topic, setId = topicSetId) }
 
-    Surface(modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars)) {
-        Column (modifier = Modifier.fillMaxSize()) {
+    Surface {
+        Column (modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.systemBars)) {
             Box(
                 modifier = Modifier.padding(start = 8.dp, top = 8.dp)
             ) {
