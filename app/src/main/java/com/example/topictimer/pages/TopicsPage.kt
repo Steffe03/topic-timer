@@ -60,7 +60,7 @@ fun TopicsPage(onBack: () -> Unit, topicSetId: Int, appViewModel: AppViewModel? 
                         modifier = Modifier.fillMaxWidth().padding(8.dp)
                     ) {
                         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Text(item.description, modifier = Modifier.fillMaxWidth(0.8F))
+                            Text(item.description, modifier = Modifier.fillMaxWidth(0.9F))
                             IconButton(onClick = { appViewModel?.removeTopic(item.id) }) {Icon(Icons.Filled.Delete, contentDescription = "Delete topic")}
                         }
                     }
