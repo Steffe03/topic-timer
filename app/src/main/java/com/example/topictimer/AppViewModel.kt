@@ -8,15 +8,18 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.topictimer.database.AppDatabase
 import com.example.topictimer.database.Topic
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     private val dao = AppDatabase.getDatabase(application, viewModelScope).topicDao()
 
-    private var currentSetId = 0
+    private val currentSetId = MutableStateFlow(0)
 
     private var topics: List<Topic> = emptyList()
     private var topicNum1 = 0
@@ -28,19 +31,23 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     var topic2 by mutableStateOf("")
         private set
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val topicsFlow = currentSetId
+        .flatMapLatest { setId -> dao.getTopicsForSet(setId) }
+
     init {
         viewModelScope.launch {
-            currentSetId = dao.getInitialTopicSetId().filterNotNull().first()
-
-            loadSet(currentSetId)
+            currentSetId.value = dao.getInitialTopicSetId().filterNotNull().first()
         }
-    }
 
-    private suspend fun loadSet(setId: Int) {
-        topics = dao.getTopicsForSet(setId).first()
-        topicNum1 = 0
-        topicNum2 = 1
-        updateDisplayedTopics()
+        viewModelScope.launch {
+            topicsFlow.collect { newTopics ->
+                topics = newTopics
+                topicNum1 = 0
+                topicNum2 = 1
+                updateDisplayedTopics()
+            }
+        }
     }
 
     private fun updateDisplayedTopics() {
@@ -62,20 +69,17 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun setTopicSet(setId: Int) {
-        currentSetId = setId
-        viewModelScope.launch { loadSet(setId) }
+        currentSetId.value = setId
     }
 
     fun getAllTopicSets() = dao.getAllTopicSets()
 
-    fun getCurrentSetId() = currentSetId
+    fun getCurrentSetId() = currentSetId.value
 
     fun removeTopicSet(setId: Int) {
         viewModelScope.launch {
             dao.removeTopicSet(setId)
-            currentSetId = dao.getInitialTopicSetId().filterNotNull().first()
-
-            loadSet(currentSetId)
+            currentSetId.value = dao.getInitialTopicSetId().filterNotNull().first()
         }
     }
 
@@ -84,7 +88,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun removeTopic(topicId: Int) {
         viewModelScope.launch {
             dao.removeTopic(topicId)
-            loadSet(currentSetId)
         }
     }
 }
