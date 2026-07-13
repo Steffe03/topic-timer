@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -36,9 +37,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.ChevronRight
+import androidx.compose.material.icons.outlined.Key
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import com.example.topictimer.pages.TimerPage
 import com.example.topictimer.pages.TopicSetsPage
 import com.example.topictimer.pages.TopicsPage
+import com.example.topictimer.components.ApiKeyDialog
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -93,11 +101,28 @@ class MainActivity : ComponentActivity() {
 fun HomePage(onOpenTimer: () -> Unit = {}, onOpenTopicSetsPage: () -> Unit = {}, appViewModel: AppViewModel? = null) {
     val haptic = LocalHapticFeedback.current
 
+    var showDialog by remember { mutableStateOf(false) }
+
     Surface {
-        Box(
-            contentAlignment = Alignment.TopEnd,
-            modifier = Modifier.fillMaxSize().padding(16.dp).windowInsetsPadding(WindowInsets.systemBars)  // Keep content below phone's status bar
+        if (showDialog) {
+            ApiKeyDialog(
+                onDismiss = { showDialog = false },
+                onConfirm = { apiKey ->
+                    appViewModel?.saveApiKey(apiKey)
+                    showDialog = false
+                },
+                onClearKey = {
+                    appViewModel?.clearApiKey()
+                }
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxSize().padding(16.dp).windowInsetsPadding(WindowInsets.systemBars),  // Keep content below phone's status bar
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
+            Button(onClick = { showDialog = true }) {
+                Icon(imageVector = Icons.Outlined.Key, contentDescription = "API key")
+            }
             Button(
                 onClick = {
                     onOpenTopicSetsPage()

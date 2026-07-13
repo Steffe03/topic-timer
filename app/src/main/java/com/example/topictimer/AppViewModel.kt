@@ -10,14 +10,18 @@ import com.example.topictimer.database.AppDatabase
 import com.example.topictimer.database.Topic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     private val dao = AppDatabase.getDatabase(application, viewModelScope).topicDao()
+    private val securityManager = SecurityManager(application)
 
     private val currentSetId = MutableStateFlow(0)
 
@@ -30,6 +34,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     var topic2 by mutableStateOf("")
         private set
+
+    val apiKey: StateFlow<String?> = securityManager.apiKeyFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val topicsFlow = currentSetId
@@ -88,6 +95,18 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun removeTopic(topicId: Int) {
         viewModelScope.launch {
             dao.removeTopic(topicId)
+        }
+    }
+
+    fun saveApiKey(apiKey: String) {
+        viewModelScope.launch {
+            securityManager.saveApiKey(apiKey)
+        }
+    }
+
+    fun clearApiKey() {
+        viewModelScope.launch {
+            securityManager.clearApiKey()
         }
     }
 }
