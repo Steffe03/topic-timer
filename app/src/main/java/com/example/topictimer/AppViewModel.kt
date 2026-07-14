@@ -17,6 +17,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import com.google.genai.Client
+import com.google.genai.types.GenerateContentConfig
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -108,5 +112,20 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             securityManager.clearApiKey()
         }
+    }
+
+    suspend fun askGemini(prompt: String): String = withContext(Dispatchers.IO) {
+        val key = securityManager.apiKeyFlow.first()
+            ?: throw IllegalStateException("API key has not been set. Please check your settings.")
+
+        val client = Client.builder().apiKey(key).build()
+
+        val response = client.models.generateContent(
+            "gemini-3.1-flash-lite",  // TODO: Use Gemini 3.5 Flash when demand is lower
+            prompt,
+            GenerateContentConfig.builder().build()
+        )
+
+        response.text() ?: ""
     }
 }

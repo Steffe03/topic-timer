@@ -21,7 +21,6 @@ import com.example.topictimer.ui.theme.TopicTimerTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
 fun ApiKeyDialog(
@@ -43,8 +42,7 @@ fun ApiKeyDialog(
                     onValueChange = { text =  it },
                     label = { Text("API key") },
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        autoCorrectEnabled = false
+                        autoCorrectEnabled = false,
                     ),
                     singleLine = true
                 )

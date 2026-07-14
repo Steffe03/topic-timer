@@ -38,7 +38,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.Key
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.example.topictimer.pages.TimerPage
@@ -47,6 +46,7 @@ import com.example.topictimer.pages.TopicsPage
 import com.example.topictimer.components.ApiKeyDialog
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.example.topictimer.pages.NewTopicsPage
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -79,6 +79,7 @@ class MainActivity : ComponentActivity() {
                         TopicSetsPage(
                             onBack = { navController.popBackStack() },
                             onOpenTopicsPage = { topicSetId -> navController.navigate("topics_page/$topicSetId") },
+                            onOpenNewTopicsPage = { navController.navigate("new_topics_page") },
                             appViewModel = appViewModel
                         )
                     }
@@ -88,6 +89,12 @@ class MainActivity : ComponentActivity() {
                             onBack = { navController.popBackStack() },
                             appViewModel = appViewModel,
                             topicSetId = topicSetId
+                        )
+                    }
+                    composable("new_topics_page") {
+                        NewTopicsPage(
+                            onBack = { navController.popBackStack() },
+                            appViewModel = appViewModel
                         )
                     }
                 }
@@ -113,6 +120,7 @@ fun HomePage(onOpenTimer: () -> Unit = {}, onOpenTopicSetsPage: () -> Unit = {},
                 },
                 onClearKey = {
                     appViewModel?.clearApiKey()
+                    showDialog = false
                 }
             )
         }

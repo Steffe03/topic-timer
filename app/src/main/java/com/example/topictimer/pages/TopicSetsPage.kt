@@ -43,7 +43,7 @@ import androidx.compose.ui.graphics.Color
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TopicSetsPage(onBack: () -> Unit, onOpenTopicsPage: (Int) -> Unit, appViewModel: AppViewModel? = null) {
+fun TopicSetsPage(onBack: () -> Unit, onOpenTopicsPage: (Int) -> Unit, onOpenNewTopicsPage: () -> Unit, appViewModel: AppViewModel? = null) {
     val topicSets: List<TopicSetWithCount> =
         if (appViewModel != null) {
             appViewModel.getAllTopicSets().collectAsState(initial = emptyList()).value
@@ -107,7 +107,7 @@ fun TopicSetsPage(onBack: () -> Unit, onOpenTopicsPage: (Int) -> Unit, appViewMo
                 item {
                     Card(
                         onClick = {
-                            /*TODO*/
+                            onOpenNewTopicsPage()
                         },
                         modifier = Modifier.fillMaxWidth().padding(8.dp),
                     ) {
@@ -124,6 +124,6 @@ fun TopicSetsPage(onBack: () -> Unit, onOpenTopicsPage: (Int) -> Unit, appViewMo
 @Composable
 fun TopicSetsPagePreview() {
     TopicTimerTheme {
-        TopicSetsPage({}, {})
+        TopicSetsPage({}, {}, {})
     }
 }
