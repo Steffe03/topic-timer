@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.topictimer.database.AppDatabase
 import com.example.topictimer.database.Topic
+import com.example.topictimer.database.TopicSet
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,8 +20,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import com.google.genai.Client
 import com.google.genai.types.GenerateContentConfig
+import com.google.genai.types.Schema
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -114,18 +117,32 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    suspend fun askGemini(prompt: String): String = withContext(Dispatchers.IO) {
+    suspend fun askGemini(prompt: String, setName: String): Unit = withContext(Dispatchers.IO) {
         val key = securityManager.apiKeyFlow.first()
             ?: throw IllegalStateException("API key has not been set. Please check your settings.")
 
         val client = Client.builder().apiKey(key).build()
 
+        val schema = Schema.builder()
+            .type("ARRAY")
+            .items(Schema.builder().type("STRING").build())
+            .build()
+
+        val config = GenerateContentConfig.builder()
+            .responseMimeType("application/json")
+            .responseSchema(schema)
+            .build()
+
         val response = client.models.generateContent(
-            "gemini-3.1-flash-lite",  // TODO: Use Gemini 3.5 Flash when demand is lower
+            "gemini-3.1-flash-lite",
             prompt,
-            GenerateContentConfig.builder().build()
+            config
         )
 
-        response.text() ?: ""
+        val json = response.text() ?: "[]"
+        val newTopics = Json.decodeFromString<List<String>>(json)
+        val setId = dao.insertTopicSet(TopicSet(name = setName)).toInt()
+
+        dao.insertAll(newTopics.map { description -> Topic(description = description, setId = setId) })
     }
 }
