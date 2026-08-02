@@ -3,7 +3,9 @@ package com.example.topictimer.components
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,6 +22,7 @@ import androidx.compose.ui.window.Dialog
 import com.example.topictimer.ui.theme.TopicTimerTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
@@ -27,6 +30,7 @@ fun ApiKeyDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
     onClearKey: () -> Unit,
+    apiKeySaved: Boolean
 ) {
     var text by remember { mutableStateOf("") }
 
@@ -35,26 +39,30 @@ fun ApiKeyDialog(
             shape = RoundedCornerShape(16.dp),
             tonalElevation = 8.dp
         ) {
-            Column (modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Give your personal Google AI API key")
-                TextField(
-                    value = text,
-                    onValueChange = { text =  it },
-                    label = { Text("API key") },
-                    keyboardOptions = KeyboardOptions(
-                        autoCorrectEnabled = false,
-                    ),
-                    singleLine = true
-                )
-                Button(onClick = {
-                    onConfirm(text)
-                }) {
-                    Text("Submit")
-                }
-                Button(onClick = {
-                    onClearKey()
-                }) {
-                    Text("Delete saved key")
+            Column (modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                if (!apiKeySaved) {
+                    Text("Give your personal Google AI API key")
+                    TextField(
+                        value = text,
+                        onValueChange = { text = it },
+                        label = { Text("API key") },
+                        keyboardOptions = KeyboardOptions(
+                            autoCorrectEnabled = false,
+                        ),
+                        singleLine = true
+                    )
+                    Button(onClick = {
+                        onConfirm(text)
+                    }) {
+                        Text("Submit")
+                    }
+                } else {
+                    Text("Your API key has been saved")
+                    Button(onClick = {
+                        onClearKey()
+                    }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                        Text("Delete saved key")
+                    }
                 }
             }
         }
@@ -66,6 +74,8 @@ fun ApiKeyDialog(
 @Composable
 fun ApiKeyDialogPreview() {
     TopicTimerTheme {
-        ApiKeyDialog({}, {}, {})
+        Box(modifier = Modifier.fillMaxSize()) {
+            ApiKeyDialog({}, {}, {}, false)
+        }
     }
 }

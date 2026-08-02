@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -29,8 +32,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.example.topictimer.AppViewModel
+import com.example.topictimer.components.ApiKeyDialog
 import com.example.topictimer.ui.theme.TopicTimerTheme
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.collectAsState
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -43,15 +48,34 @@ fun NewTopicsPage(onBack: () -> Unit, appViewModel: AppViewModel? = null) {
     var noOfTopics by remember { mutableStateOf("") }
     val noOfTopicsInt = noOfTopics.toIntOrNull()
     val wrongNoOfTopics = noOfTopicsInt != null && noOfTopicsInt !in 1..100
+    var showDialog by remember { mutableStateOf(false) }
+    val apiKeySaved = appViewModel?.apiKey?.collectAsState()?.value != null
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Surface(modifier = Modifier.padding(padding)) {
+            if (showDialog) {
+                ApiKeyDialog(
+                    onDismiss = { showDialog = false },
+                    onConfirm = { apiKey ->
+                        appViewModel?.saveApiKey(apiKey)
+                        showDialog = false
+                    },
+                    onClearKey = {
+                        appViewModel?.clearApiKey()
+                        showDialog = false
+                    },
+                    apiKeySaved = apiKeySaved
+                )
+            }
             Column(
                 modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.systemBars).padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                Button(onClick = { showDialog = true }) {
+                    Icon(imageVector = Icons.Outlined.Key, contentDescription = "API key")
+                }
                 TextField(
                     value = topicArea,
                     onValueChange = { topicArea = it },
